@@ -1,0 +1,8 @@
+{
+  "name": "@typescript-monorepo-release-flow/monorepo",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ]
+}
