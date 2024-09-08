@@ -17,5 +17,5 @@
     "turbo": "^2.1.1"
   },
   "packageManager": "bun@1.1.26",
-  "version": "0.1.0"
+  "version": "0.2.0"
 }
