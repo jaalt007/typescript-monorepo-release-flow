@@ -1,15 +1,7 @@
-# typescript-monorepo-release-flow
-
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.1.26. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+- [ ] trunk based development flow
+- [ ] github actions
+- [ ] docker build of API server + serving the universal web SPA build (potentially under caddy, with same /api/* proxying to the api server running on bun?)
+- [ ] universal web build
+- [ ] universal android apk build
+- [ ] universal ios ipa build
+- [ ] turborepo remote cache with cloudflare worker
