@@ -42,15 +42,3 @@ jobs:
           draft: false
           prerelease: false
           target_commitish: ${{ github.event.pull_request.merge_commit_sha }}
-
-      - name: Merge main into develop branch
-        uses: thomaseizinger/create-pull-request@1.3.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          head: main
-          base: develop
-          title: Merge main into develop branch
-          body: |
-            This PR merges the main branch back into develop.
-            This happens to ensure that the updates that happend on the release branch, i.e. CHANGELOG and manifest updates are also present on the develop branch.
