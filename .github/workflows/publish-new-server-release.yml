@@ -20,7 +20,7 @@ jobs:
         if: startsWith(github.event.pull_request.head.ref, 'release/server-')
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
-          VERSION=${BRANCH_NAME#release/server-v}
+          VERSION=${BRANCH_NAME#release/}
 
           echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
 
@@ -28,7 +28,7 @@ jobs:
         if: startsWith(github.event.pull_request.head.ref, 'hotfix/server-')
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
-          VERSION=${BRANCH_NAME#hotfix/server-}
+          VERSION=${BRANCH_NAME#hotfix/}
 
           echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
 
