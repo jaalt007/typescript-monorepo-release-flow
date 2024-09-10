@@ -1,4 +1,4 @@
-name: Android App APK Build
+name: iOS App Build
 
 on:
   push:
@@ -39,15 +39,6 @@ jobs:
           node-version: 18.x
           cache: 'npm'
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Setup Expo
         uses: expo/expo-github-action@v8
         with:
@@ -58,20 +49,32 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Build Android app
-        working-directory: apps/universal
-        run: eas build --profile ${{ inputs.profile || 'unsigned' }} --platform android --local --output ${{ github.workspace }}/app-release.apk
+      - name: Get version from universal package.json
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+        with:
+          path: apps/universal
 
-      - name: Upload APK artifact
+      - name: Build iOS app
+        working-directory: apps/universal
+        run: eas build --profile ${{ inputs.profile || 'unsigned' }} --platform ios --local --output ${{ github.workspace }}/build.tar.gz
+
+      - name: Extract and rename iOS app
+        run: |
+          mkdir -p extracted
+          tar -xzf ${{ github.workspace }}/build.tar.gz -C extracted
+          mv extracted/universal.app ${{ github.workspace }}/universal-ios-simulator-${{ steps.package-version.outputs.current-version }}.app
+
+      - name: Upload iOS artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: ${{ github.workspace }}/app-release.apk
+          path: ${{ github.workspace }}/universal-ios-simulator-${{ steps.package-version.outputs.current-version }}.app
 
       - name: Upload APK to Release
         if: startsWith(github.ref, 'refs/tags/universal-v')
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ github.workspace }}/app-release.apk
+          files: ${{ github.workspace }}/universal-ios-simulator-${{ steps.package-version.outputs.current-version }}.app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
