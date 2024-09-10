@@ -1,4 +1,4 @@
-name: 'Publish new release'
+name: 'Publish new server release'
 
 on:
   pull_request:
@@ -13,22 +13,22 @@ jobs:
     runs-on: ubuntu-latest
     # only merged pull requests that begin with 'release/' or 'hotfix/' must trigger this job
     if: github.event.pull_request.merged == true &&
-      (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix/'))
+      (startsWith(github.event.pull_request.head.ref, 'release/server-') || startsWith(github.event.pull_request.head.ref, 'hotfix/server-'))
 
     steps:
       - name: Extract version from branch name (for release branches)
-        if: startsWith(github.event.pull_request.head.ref, 'release/')
+        if: startsWith(github.event.pull_request.head.ref, 'release/server-')
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
-          VERSION=${BRANCH_NAME#release/}
+          VERSION=${BRANCH_NAME#release/server-v}
 
           echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Extract version from branch name (for hotfix branches)
-        if: startsWith(github.event.pull_request.head.ref, 'hotfix/')
+        if: startsWith(github.event.pull_request.head.ref, 'hotfix/server-')
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
-          VERSION=${BRANCH_NAME#hotfix/}
+          VERSION=${BRANCH_NAME#hotfix/server-}
 
           echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
 
