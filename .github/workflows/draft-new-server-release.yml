@@ -1,4 +1,4 @@
-name: 'Draft new release'
+name: 'Draft new server release'
 
 on:
   workflow_dispatch:
@@ -27,16 +27,19 @@ jobs:
       - name: Setup bun environment
         uses: oven-sh/setup-bun@v2
 
-      - name: changelogen
+      - name: Change to server directory and run changelogen
+        working-directory: ./apps/server
         run: |
           bunx changelogen@latest --bump --${{ inputs.semver }}
 
-      - name: Get version from package.json
+      - name: Get version from server package.json
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
+        with:
+          path: apps/server
 
       - name: Create release branch
-        run: git checkout -b release/v${{ steps.package-version.outputs.current-version }}
+        run: git checkout -b release/server-v${{ steps.package-version.outputs.current-version }}
 
       - name: Initialize mandatory git config
         run: |
@@ -46,13 +49,13 @@ jobs:
       - name: Commit manifest files
         id: make-commit
         run: |
-          git add package.json CHANGELOG.md
-          git commit --message "Prepare release v${{ steps.package-version.outputs.current-version }}"
+          git add apps/server/package.json apps/server/CHANGELOG.md
+          git commit --message "Prepare release server-v${{ steps.package-version.outputs.current-version }}"
 
           echo "::set-output name=commit::$(git rev-parse HEAD)"
 
       - name: Push new branch
-        run: git push origin release/v${{ steps.package-version.outputs.current-version }}
+        run: git push origin release/server-v${{ steps.package-version.outputs.current-version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -61,13 +64,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          head: release/v${{ steps.package-version.outputs.current-version }}
+          head: release/server-v${{ steps.package-version.outputs.current-version }}
           base: main
-          title: Release version v${{ steps.package-version.outputs.current-version }}
-          reviewers: ${{ github.actor }} # By default, we request a review from the person who triggered the workflow.
-          # Write a nice message to the user.
-          # We are claiming things here based on the `publish-new-release.yml` workflow.
-          # You should obviously adopt it to say the truth depending on your release workflow :)
+          title: Release version server-v${{ steps.package-version.outputs.current-version }}
+          reviewers: ${{ github.actor }}
           body: |
             Hi @${{ github.actor }}!
 
