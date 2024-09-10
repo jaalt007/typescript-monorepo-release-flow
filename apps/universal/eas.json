@@ -1,0 +1,21 @@
+{
+  "cli": {
+    "appVersionSource": "local"
+  },
+  "build": {
+    "unsigned": {
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease",
+        "withoutCredentials": true,
+        "autoIncrement": true
+      },
+      "ios": {
+        "simulator": true,
+        "distribution": "internal",
+        "withoutCredentials": true,
+        "autoIncrement": true
+      }
+    }
+  }
+}

@@ -16,6 +16,19 @@
       ]
     ],
     "name": "universal",
-    "slug": "universal"
+    "slug": "universal",
+    "ios": {
+      "buildNumber": "2",
+      "bundleIdentifier": "com.0domainscalzone.universal"
+    },
+    "android": {
+      "versionCode": 2,
+      "package": "com.domainscalzone.universal"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6bd9e8ff-6ebb-4a8c-9ecf-9f757ea1b016"
+      }
+    }
   }
 }
