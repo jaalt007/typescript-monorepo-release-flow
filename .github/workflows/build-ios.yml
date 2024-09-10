@@ -49,12 +49,6 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Get version from universal package.json
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@v1.3.1
-        with:
-          path: apps/universal
-
       - name: Build iOS app
         working-directory: apps/universal
         run: eas build --profile ${{ inputs.profile || 'unsigned' }} --platform ios --local --output ${{ github.workspace }}/build.tar.gz
@@ -63,18 +57,18 @@ jobs:
         run: |
           mkdir -p extracted
           tar -xzf ${{ github.workspace }}/build.tar.gz -C extracted
-          mv extracted/universal.app ${{ github.workspace }}/universal-ios-simulator-${{ steps.package-version.outputs.current-version }}.app
+          mv extracted/universal.app ${{ github.workspace }}/ios-simulator-${{ github.ref_name }}.app
 
       - name: Upload iOS artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: ${{ github.workspace }}/universal-ios-simulator-${{ steps.package-version.outputs.current-version }}.app
+          path: ${{ github.workspace }}/ios-simulator-${{ github.ref_name }}.app
 
       - name: Upload APK to Release
         if: startsWith(github.ref, 'refs/tags/universal-v')
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ github.workspace }}/universal-ios-simulator-${{ steps.package-version.outputs.current-version }}.app
+          files: ${{ github.workspace }}/ios-simulator-${{ github.ref_name }}.app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

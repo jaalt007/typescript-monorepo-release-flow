@@ -58,27 +58,20 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-
-      - name: Get version from universal package.json
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@v1.3.1
-        with:
-          path: apps/universal
-
       - name: Build Android app
         working-directory: apps/universal
-        run: eas build --profile ${{ inputs.profile || 'unsigned' }} --platform android --local --output ${{ github.workspace }}/app-${{ steps.package-version.outputs.current-version }}.apk
+        run: eas build --profile ${{ inputs.profile || 'unsigned' }} --platform android --local --output ${{ github.workspace }}/android-${{ github.ref_name }}.apk
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release
-          path: ${{ github.workspace }}/app-${{ steps.package-version.outputs.current-version }}.apk
+          path: ${{ github.workspace }}/android-${{ github.ref_name }}.apk
 
       - name: Upload APK to Release
         if: startsWith(github.ref, 'refs/tags/universal-v')
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ github.workspace }}/app-${{ steps.package-version.outputs.current-version }}.apk
+          files: ${{ github.workspace }}/android-${{ github.ref_name }}.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
